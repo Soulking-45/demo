@@ -1,0 +1,160 @@
+ASP.NET Core MVC Unit Testing using xUnit
+
+Step 1: Create ASP.NET Core MVC Project
+
+1. Open Visual Studio.
+2. Select ASP.NET Core Web Application (Model-View-Controller).
+3. Project Name: StudentManagement
+4. Click Create.
+
+Step 2: Add Test Project
+
+1. Right-click on Solution in Solution Explorer.
+2. Select Add → New Project.
+3. Search for xUnit Test Project.
+4. Select xUnit Test Project and click Next.
+5. Project Name: StudentManagement.Tests
+6. Click Create.
+
+
+Step 3: Add Project Reference
+
+1. Right-click StudentManagement.Tests.
+2. Select Add → Project Reference.
+3. Check StudentManagement.
+4. Click OK.
+
+Step 4: Install NuGet Packages
+
+Right-click StudentManagement.Tests → Manage NuGet Packages.
+
+Install the following packages:
+
+1. xunit
+2. xunit.runner.visualstudio
+3. Microsoft.NET.Test.Sdk
+
+Step 5: Create Class to Test
+
+In the StudentManagement project, create Calculator.cs.
+
+Code:
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace StudentManagement2
+{
+    public class Calculator
+    {
+        public int Add(int a, int b)
+        {
+            return a + b;
+        }
+        public int Multiply(int a, int b)
+        {
+            return a * b;
+        }
+    }
+}
+
+Step 6: Create Unit Test Class
+
+Inside StudentManagement.Tests, create CalculatorTests.cs.
+
+Code:
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Xunit;
+using StudentManagement2;
+using StudentManagement2.Models;
+
+namespace StudentManagementTests
+{
+    public class CalculatorTests2
+    {
+        [Fact]
+        public void Add_TwoNumbers_ReturnsSum()
+        {
+            // Arrange  
+            Calculator c = new StudentManagement2.Calculator();
+            // Act  
+            int result = c.Add(10, 20);
+            // Assert  
+            Assert.Equal(30, result);
+        }
+    }
+}
+
+Step 7: Run the Test
+
+1. Go to Test → Test Explorer.
+2. Click Run All.
+3. Check the test result.
+
+Expected Output:
+
+Passed: 1
+Failed: 0
+Skipped: 0
+
+Important:
+
+Arrange → Create object and prepare data.
+Act → Call the method being tested.
+Assert → Verify the expected result.
+
+Example:
+
+[Fact]
+public void Multiply_TwoNumbers_ReturnsProduct()
+{
+    Calculator c = new Calculator();
+
+    int result = c.Multiply(5, 4);
+
+    Assert.Equal(20, result);
+}
+
+Multiple Test Cases:
+
+[Theory]
+[InlineData(10, 20, 30)]
+[InlineData(5, 5, 10)]
+[InlineData(100, 50, 150)]
+public void Add_TestCases(int a, int b, int expected)
+{
+    Calculator c = new Calculator();
+
+    int result = c.Add(a, b);
+
+    Assert.Equal(expected, result);
+}
+
+Testing String Method:
+
+Main Project:
+
+public class Student
+{
+    public string GetName()
+    {
+        return "Rahul";
+    }
+}
+
+Test Project:
+
+[Fact]
+public void GetName_ReturnsStudentName()
+{
+    Student s = new Student();
+
+    string result = s.GetName();
+
+    Assert.Equal("Rahul", result);
+}

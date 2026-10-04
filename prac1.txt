@@ -1,0 +1,100 @@
+
+Create a Simple ASP.NET Core Web Application
+
+Step 1: Open Visual Studio 2019
+
+1. Open Visual Studio 2019.
+2. Click Create a new project.
+
+Step 2: Select Project Template
+
+1. Search for ASP.NET Core Web App.
+2. Select it.
+3. Click Next.
+
+Step 3: Configure Project
+
+Project Name: HelloWebApp
+Location: Choose a folder
+
+Click Create.
+
+Step 4: Choose Framework
+
+1. Select .NET Core.
+2. Select the required framework version.
+3. Choose Web Application (Model-View-Controller) or Empty.
+4. Click Create.
+
+Visual Studio creates the project automatically.
+
+
+Project1: Display "Hello World"
+
+Step 1: Open Controller
+Open: Controllers/HomeController.cs
+
+Step 2: Modify the Action
+
+Write:
+
+using Microsoft.AspNetCore.Mvc;
+
+namespace HelloWebApp.Controllers
+{
+    public class HomeController : Controller
+    {
+        public IActionResult Index()
+        {
+            return Content("Hello World from ASP.NET Core!");
+        }
+    }
+}
+
+Step 3: Run the Application
+
+project2: Create a Simple Form
+
+Step 1: Open HomeController
+Open: Controllers/HomeController.cs
+
+Step 2: Write the Controller Code
+
+using Microsoft.AspNetCore.Mvc;
+
+namespace HelloWebApp.Controllers
+{
+    public class HomeController : Controller
+    {
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Index(string name)
+        {
+            ViewBag.Message = "Welcome " + name;
+            return View();
+        }
+    }
+}
+
+Step 3: Create the View
+Open: Views/Home/Index.cshtml
+
+Replace the contents with:
+
+<form method="post">
+    <label>Name:</label>
+    <input type="text" name="name" />
+    <button type="submit">Submit</button>
+</form>
+
+@if(ViewBag.Message != null)
+{
+    <h2>@ViewBag.Message</h2>
+}
+
+Step 4: Run the Application
+
