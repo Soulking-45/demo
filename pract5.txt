@@ -1,0 +1,247 @@
+SECURE ASP.NET MVC APPLICATION – AUTHENTICATION AND AUTHORIZATION
+
+Step 1: Create a New ASP.NET MVC Project
+
+1. Open Visual Studio 2019.
+2. Click Create a new project.
+3. Select ASP.NET Web Application (.NET Framework).
+4. Click Next.
+5. Enter Project Name: SecureMVCApp
+6. Click Create.
+7. Choose ASP.NET Core Web App (Model-View-Controller).
+8. Click Change Authentication.
+9. Select Individual User Accounts.
+10. Click OK.
+11. Click Create.
+
+Visual Studio automatically creates:
+- Identity Database
+- Login page
+- Registration page
+- Logout page
+- Identity models
+
+
+Step 2: Run the Application
+
+Press:
+
+Ctrl + F5
+
+The Home page opens.
+
+The top-right corner contains:
+
+Register
+Login
+
+These are automatically created.
+
+
+Step 3: Create the Identity Database
+
+Open:
+
+View → Server Explorer
+
+Check:
+
+Data connections → DefaultConnections(DemoSecurity) → Tables
+
+First register a user.
+
+ASP.NET Core automatically creates a database similar to:
+
+SecureMVCAppIdentity
+
+It contains tables such as:
+
+AspNetUsers
+AspNetRoles
+AspNetUserRoles
+AspNetUserClaims
+AspNetUserLogins
+AspNetUserTokens
+
+
+Step 4: Register a User
+
+Click:
+
+Register
+
+Enter:
+
+Email: student@gmail.com
+Password: Student@123
+Confirm Password: Student@123
+
+Click Register.
+
+The user is saved in:
+
+AspNetUsers
+
+
+Step 5: Verify the User
+
+Open:
+
+Server Explorer → Tables → AspNetUsers
+
+Right-click:
+
+View Data
+
+You can see:
+
+Email
+Password Hash
+UserName
+
+The password is stored as a hash.
+
+
+Step 6: Understand Authentication
+
+Authentication means:
+
+"Who are you?"
+
+Example:
+
+Username: student@gmail.com
+Password: Student@123
+
+If the details are correct:
+
+User logs in.
+
+Otherwise:
+
+Access is denied.
+
+
+Step 7: Create a Secure Controller
+
+Create:
+
+Controllers → Add → Controller
+
+Create:
+
+StudentController.cs
+
+Write:
+
+namespace SecureMVCApp.Controllers
+{
+    [Authorize]
+    public class StudentController : Controller
+    {
+        public ActionResult Index()
+        {
+            return View();
+        }
+    }
+}
+
+Important:
+
+[Authorize]
+
+This protects the controller and allows only logged-in users to access it.
+
+
+Step 8: Create View
+
+Inside:
+
+Views → Student
+
+Create:
+
+Index.cshtml
+
+Write:
+
+<h2>Student Dashboard</h2>
+
+<p>Only logged-in users can see this page.</p>
+
+
+Step 9: Test Authorization
+
+Run:
+
+https://localhost:5001/Student
+
+Without login:
+
+You are redirected automatically to the Login page.
+
+After login:
+
+Student Dashboard opens.
+
+
+Step 10: Protect Only One Action
+
+Instead of protecting the whole controller, use [Authorize] only on the required action.
+
+Write:
+
+public class StudentController : Controller
+{
+    public ActionResult About()
+    {
+        return View();
+    }
+
+    [Authorize]
+    public ActionResult Result()
+    {
+        return View();
+    }
+}
+
+Result:
+
+/Student/Index
+/Student/about
+
+Everyone can access.
+
+But:
+
+/Student/Result
+
+Redirects to the Login page for users who are not logged in.
+
+
+Step 11: Allow Anonymous Users
+
+Sometimes one page should be public.
+
+Write:
+
+[Authorize]
+public class StudentController : Controller
+{
+    [AllowAnonymous]
+    public ActionResult About()
+    {
+        return View();
+    }
+
+    public ActionResult Dashboard()
+    {
+        return View();
+    }
+}
+
+Result:
+
+[AllowAnonymous]
+
+Allows everyone to access the About page, even when the controller has [Authorize].
