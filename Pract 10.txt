@@ -1,0 +1,258 @@
+
+CREATING AN APPLICATION USING RAZOR PAGES AND TAG HELPERS
+
+STEP 1: OPEN VISUAL STUDIO 2019
+
+1. Open Visual Studio 2019.
+2. Select Create a new project.
+3. Search for ASP.NET Web Application (.NET Framework).
+4. Select it.
+5. Click Next.
+
+
+STEP 2: CREATE THE PROJECT
+
+1. Project Name: StudentRegistration
+2. Choose a suitable location.
+3. Select .NET Framework 4.7.2 or any available version.
+4. Click Create.
+
+
+STEP 3: SELECT MVC TEMPLATE
+
+1. Select MVC.
+2. Select No Authentication.
+3. Click Create.
+
+Project structure:
+
+StudentRegistration
+│
+├── Controllers
+├── Models
+├── Views
+│   ├── Home
+│   └── Shared
+├── Content
+├── Scripts
+├── Web.config
+└── Global.asax
+
+
+STEP 4: CREATE THE STUDENT MODEL
+
+1. Right-click Models folder.
+2. Select Add → Class.
+3. Enter Student.cs.
+4. Add this code:
+
+using System.ComponentModel.DataAnnotations;
+
+namespace StudentRegistration.Models
+{
+    public class Student
+    {
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Email { get; set; }
+
+        [Required]
+        public string Password { get; set; }
+
+        [Required]
+        public string Gender { get; set; }
+
+        [Required]
+        public string Course { get; set; }
+
+        public bool Agree { get; set; }
+    }
+}
+
+
+STEP 5: CREATE THE STUDENT CONTROLLER
+
+1. Right-click Controllers folder.
+2. Select Add → Controller.
+3. Select MVC 5 Controller - Empty.
+4. Enter StudentController.
+5. Click Add.
+6. Replace the code with:
+
+using System.Web.Mvc;
+using StudentRegistration.Models;
+
+namespace StudentRegistration.Controllers
+{
+    public class StudentController : Controller
+    {
+        public ActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Register(Student student)
+        {
+            if (ModelState.IsValid)
+            {
+                ViewBag.Message = "Student registered successfully!";
+            }
+
+            return View(student);
+        }
+    }
+}
+
+
+STEP 6: CREATE THE RAZOR VIEW
+
+1. Right-click inside the Register() method.
+2. Select Add View.
+3. View Name: Register.
+4. Template: Empty.
+5. Model Class: Student.
+6. Click Add.
+
+The view will be created at:
+
+Views
+└── Student
+    └── Register.cshtml
+
+
+STEP 7: CREATE THE REGISTRATION FORM
+
+Open:
+
+Views/Student/Register.cshtml
+
+Add this code:
+
+@model StudentRegistration.Models.Student
+
+@{
+    ViewBag.Title = "Student Registration";
+}
+
+<h2>Student Registration</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.LabelFor(m => m.Name)
+    @Html.TextBoxFor(m => m.Name)
+    @Html.ValidationMessageFor(m => m.Name)
+
+    @Html.LabelFor(m => m.Email)
+    @Html.TextBoxFor(m => m.Email)
+    @Html.ValidationMessageFor(m => m.Email)
+
+    @Html.LabelFor(m => m.Password)
+    @Html.PasswordFor(m => m.Password)
+    @Html.ValidationMessageFor(m => m.Password)
+
+    @Html.LabelFor(m => m.Gender)
+    @Html.RadioButtonFor(m => m.Gender, "Male")
+    @:Male
+
+    @Html.RadioButtonFor(m => m.Gender, "Female")
+    @:Female
+
+    @Html.LabelFor(m => m.Course)
+    @Html.DropDownListFor(
+        m => m.Course,
+        new SelectList(new[]
+        {
+            "BSc Data Science",
+            "BSc IT",
+            "BCA",
+            "MCA"
+        }),
+        "Select Course"
+    )
+
+    @Html.CheckBoxFor(m => m.Agree)
+    @:I agree to the terms and conditions.
+
+    <button type="submit">Register</button>
+}
+
+@if (ViewBag.Message != null)
+{
+    <h3>@ViewBag.Message</h3>
+}
+
+STEP 8: RUN THE PROJECT
+
+1. Press Ctrl + F5.
+2. Or click IIS Express.
+3. The browser will open.
+4. Navigate to:
+
+https://localhost:xxxxx/Student/Register
+
+
+STEP 9: TEST FORM SUBMISSION
+
+Enter:
+
+Name      : Rahul
+Email     : rahul@gmail.com
+Password  : 12345
+Gender    : Male
+Course    : BSc Data Science
+
+Select:
+
+I agree to the terms and conditions.
+
+Click Register.
+
+The controller receives the data using:
+
+[HttpPost]
+public ActionResult Register(Student student)
+
+If the data is valid:
+
+ViewBag.Message = "Student registered successfully!";
+
+The page displays:
+
+Student registered successfully!
+
+
+STEP 10: TEST VALIDATION
+
+1. Run the application.
+2. Leave the required fields empty.
+3. Click Register.
+4. Validation messages will be displayed.
+
+Required fields:
+
+[Required]
+public string Name { get; set; }
+
+[Required]
+public string Email { get; set; }
+
+[Required]
+public string Password { get; set; }
+
+[Required]
+public string Gender { get; set; }
+
+[Required]
+public string Course { get; set; }
+
+Example:
+
+Name is required.
+Email is required.
+Password is required.
+Gender is required.
+Course is required.
+
