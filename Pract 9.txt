@@ -1,0 +1,400 @@
+ASP.NET MVC Student Application
+
+PART A – CREATE THE PROJECT
+
+Step 1: Open Visual Studio 2019
+
+Open Visual Studio 2019.
+Select: Create a new project.
+
+Step 2: Select ASP.NET MVC Project
+
+Search for:
+ASP.NET Web Application (.NET Framework)
+
+Select it and click Next.
+
+Step 3: Configure the Project
+
+Project Name:
+StudentMVC
+
+Select a suitable location.
+Click Create.
+
+Step 4: Select MVC Template
+
+Select:
+MVC
+
+Keep the other options at their default values.
+Click Create.
+
+
+PART B – PROJECT STRUCTURE
+
+In Solution Explorer, you will see:
+
+StudentMVC
+│
+├── App_Start
+├── Content
+├── Controllers
+│   └── HomeController.cs
+├── Models
+├── Views
+│   ├── Home
+│   │   ├── Index.cshtml
+│   │   ├── About.cshtml
+│   │   └── Contact.cshtml
+│   └── Shared
+├── Global.asax
+├── Web.config
+└── ...
+
+
+PART C – EXISTING CONTROLLER
+
+Open:
+Controllers → HomeController.cs
+
+Code:
+
+using System.Web.Mvc;
+
+namespace StudentMVC.Controllers
+{
+    public class HomeController : Controller
+    {
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        public ActionResult About()
+        {
+            ViewBag.Message = "Your application description page.";
+            return View();
+        }
+
+        public ActionResult Contact()
+        {
+            ViewBag.Message = "Your contact page.";
+            return View();
+        }
+    }
+}
+
+Important:
+Index() is an action method.
+return View() displays the corresponding View.
+
+Corresponding view:
+Views/Home/Index.cshtml
+
+
+PART D – MODIFY THE CONTROLLER
+
+Open:
+Controllers → HomeController.cs
+
+Add:
+
+public ActionResult Student()
+{
+    ViewBag.Name = "Rahul";
+    ViewBag.Course = "B.Sc. Information Technology";
+    ViewBag.RollNo = 101;
+
+    return View();
+}
+
+The controller will contain:
+
+public class HomeController : Controller
+{
+    public ActionResult Index()
+    {
+        return View();
+    }
+
+    public ActionResult Student()
+    {
+        ViewBag.Name = "Rahul";
+        ViewBag.Course = "B.Sc. Information Technology";
+        ViewBag.RollNo = 101;
+
+        return View();
+    }
+}
+
+
+PART E – CREATE THE VIEW
+
+Right-click Student() inside HomeController.cs.
+Select: Add View.
+
+View name:
+Student
+
+Select:
+Empty (without model)
+
+Click Add.
+
+Visual Studio creates:
+
+Views
+└── Home
+    └── Student.cshtml
+
+
+PART F – ADD HTML TO THE VIEW
+
+Open:
+Views → Home → Student.cshtml
+
+Replace the contents with:
+
+@{
+    ViewBag.Title = "Student Information";
+}
+
+<h2>Student Information</h2>
+
+<p><strong>Name:</strong> @ViewBag.Name</p>
+<p><strong>Roll Number:</strong> @ViewBag.RollNo</p>
+<p><strong>Course:</strong> @ViewBag.Course</p>
+
+@ViewBag.Name gets the value from the Controller.
+
+Controller:
+ViewBag.Name = "Rahul";
+
+Output:
+Name: Rahul
+
+
+PART G – RUN THE APPLICATION
+
+Press:
+Ctrl + F5
+
+The default URL might look like:
+http://localhost:xxxxx/
+
+Add:
+/Home/Student
+
+Example:
+http://localhost:54321/Home/Student
+
+Output:
+
+Student Information
+Name: Rahul
+Roll Number: 101
+Course: B.Sc. Information Technology
+
+
+PART H – MVC ROUTING
+
+URL:
+/Home/Student
+
+MVC interprets it as:
+
+/Home/Student
+   │       │
+   │       └── Action Method
+   └────────── Controller
+
+Home → HomeController
+Student → Student()
+
+MVC executes:
+
+public ActionResult Student()
+{
+    ...
+    return View();
+}
+
+And displays:
+
+Views/Home/Student.cshtml
+
+
+PART I – PASS DATA FROM CONTROLLER TO VIEW
+
+Controller:
+
+public ActionResult Student()
+{
+    ViewBag.Name = "Rahul";
+    ViewBag.Age = 20;
+    ViewBag.Course = "B.Sc. IT";
+
+    return View();
+}
+
+View:
+
+<h2>Student Details</h2>
+
+<p>Name: @ViewBag.Name</p>
+<p>Age: @ViewBag.Age</p>
+<p>Course: @ViewBag.Course</p>
+
+Output:
+
+Student Details
+Name: Rahul
+Age: 20
+Course: B.Sc. IT
+
+
+PART J – CREATE A SECOND CONTROLLER
+
+Right-click:
+Controllers → Add → Controller
+
+Select:
+MVC 5 Controller - Empty
+
+Click Add.
+
+Enter:
+StudentController
+
+Click Add.
+
+Visual Studio creates:
+
+Controllers
+├── HomeController.cs
+└── StudentController.cs
+
+
+PART K – ADD AN ACTION TO STUDENTCONTROLLER
+
+Open:
+StudentController.cs
+
+Add:
+
+using System.Web.Mvc;
+
+namespace StudentMVC.Controllers
+{
+    public class StudentController : Controller
+    {
+        public ActionResult Index()
+        {
+            ViewBag.Message = "Welcome to Student Management";
+            return View();
+        }
+
+        public ActionResult Details()
+        {
+            ViewBag.Name = "Priya";
+            ViewBag.Course = "B.Sc. Information Technology";
+            ViewBag.RollNo = 102;
+
+            return View();
+        }
+    }
+}
+
+
+PART L – CREATE THE DETAILS VIEW
+
+Right-click:
+
+public ActionResult Details()
+
+Select:
+Add View
+
+View name:
+Details
+
+Select:
+Empty (without model)
+
+Click Add.
+
+File created:
+
+Views
+└── Student
+    └── Details.cshtml
+
+Add:
+
+@{
+    ViewBag.Title = "Student Details";
+}
+
+<h2>Student Details</h2>
+
+<p>Name: @ViewBag.Name</p>
+<p>Roll Number: @ViewBag.RollNo</p>
+<p>Course: @ViewBag.Course</p>
+
+
+PART M – RUN THE SECOND CONTROLLER
+
+Run the project.
+
+Enter:
+
+/Student/Details
+
+Example:
+http://localhost:54321/Student/Details
+
+Flow:
+
+Browser
+↓
+/Student/Details
+↓
+StudentController
+↓
+Details()
+↓
+Views/Student/Details.cshtml
+↓
+HTML Page
+
+
+PART N – CREATE A LINK BETWEEN VIEWS
+
+Open:
+Views/Home/Index.cshtml
+
+Add:
+
+<h2>Welcome to Student MVC Application</h2>
+
+<a href="/Student/Details">View Student Details</a>
+
+Better MVC approach:
+
+@Html.ActionLink(
+    "View Student Details",
+    "Details",
+    "Student"
+)
+
+Flow:
+
+StudentController
+↓
+Details()
+↓
+Details.cshtml
+
+COMPLETE PROJECT STRUCTURE
+
