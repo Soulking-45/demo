@@ -1,0 +1,358 @@
+
+ASP.NET MVC Dependency Injection Using Ninject
+
+Step 1: Create the ASP.NET MVC Project
+
+1. Open Visual Studio 2019.
+2. Select Create a new project.
+3. Select ASP.NET Web Application (.NET Framework).
+4. Click Next.
+5. Project Name: DependencyInjectionDemo
+6. Select .NET Framework 4.7.2 or any available version.
+7. Click Create.
+8. Select MVC.
+9. Select No Authentication.
+10. Click Create.
+
+
+Step 2: Install Ninject
+
+Go to:
+
+Tools → NuGet Package Manager → Package Manager Console
+
+Run:
+
+Install-Package Ninject.MVC5
+
+Wait until installation finishes.
+
+Note:
+If NinjectWebCommon.cs is not created automatically, create NinjectConfig.cs manually.
+
+
+Step 3: Check Ninject References
+
+In Solution Explorer, expand References.
+
+Check for:
+
+Ninject
+Ninject.Web.Common
+Ninject.Web.Mvc
+
+If required, install them using:
+
+Install-Package Ninject
+Install-Package Ninject.Web.Common
+Install-Package Ninject.Web.Mvc
+
+
+Step 4: Create IStudentService.cs
+
+In Solution Explorer:
+
+Models → Right-click → Add → Class
+
+Name:
+
+IStudentService.cs
+
+Add this code:
+
+using System.Collections.Generic;
+
+namespace DependencyInjectionDemo.Models
+{
+    public interface IStudentService
+    {
+        List<string> GetStudents();
+    }
+}
+
+Meaning:
+IStudentService is an interface. It defines the GetStudents() method.
+
+
+Step 5: Create StudentService.cs
+
+Go to:
+
+Models → Right-click → Add → Class
+
+Name:
+
+StudentService.cs
+
+Add this code:
+
+using System.Collections.Generic;
+
+namespace DependencyInjectionDemo.Models
+{
+    public class StudentService : IStudentService
+    {
+        public List<string> GetStudents()
+        {
+            return new List<string>
+            {
+                "Rahul",
+                "Priya",
+                "Amit",
+                "Sneha"
+            };
+        }
+    }
+}
+
+Meaning:
+StudentService implements IStudentService.
+
+
+Step 6: Create StudentController.cs
+
+Go to:
+
+Controllers → Right-click → Add → Controller
+
+Select:
+
+MVC 5 Controller - Empty
+
+Click Add.
+
+Enter:
+
+StudentController
+
+Replace the controller code with:
+
+using System.Web.Mvc;
+using DependencyInjectionDemo.Models;
+
+namespace DependencyInjectionDemo.Controllers
+{
+    public class StudentController : Controller
+    {
+        private readonly IStudentService studentService;
+
+        public StudentController(IStudentService studentService)
+        {
+            this.studentService = studentService;
+        }
+
+        public ActionResult Index()
+        {
+            var students = studentService.GetStudents();
+            return View(students);
+        }
+    }
+}
+
+Constructor Injection:
+
+public StudentController(IStudentService studentService)
+{
+    this.studentService = studentService;
+}
+
+The controller asks for an object that implements IStudentService.
+
+We do not write:
+
+studentService = new StudentService();
+
+Ninject provides the required object automatically.
+
+This is called Constructor Injection.
+
+
+Step 7: Create NinjectConfig.cs
+
+Go to:
+
+App_Start → Right-click → Add → Class
+
+Name:
+
+NinjectConfig.cs
+
+Add this code:
+
+using Ninject;
+using Ninject.Web.Mvc;
+using System.Web.Mvc;
+using DependencyInjectionDemo.Models;
+
+namespace DependencyInjectionDemo.App_Start
+{
+    public static class NinjectConfig
+    {
+        public static void RegisterDependencies()
+        {
+            IKernel kernel = new StandardKernel();
+
+            kernel.Bind<IStudentService>()
+                  .To<StudentService>();
+
+            DependencyResolver.SetResolver(
+                new NinjectDependencyResolver(kernel)
+            );
+        }
+    }
+}
+
+This tells Ninject:
+
+IStudentService → StudentService
+
+
+Step 8: Modify Global.asax.cs
+
+Open:
+
+Global.asax.cs
+
+Add:
+
+using DependencyInjectionDemo.App_Start;
+
+Complete code:
+
+using System;
+using System.Web;
+using System.Web.Mvc;
+using System.Web.Optimization;
+using System.Web.Routing;
+using DependencyInjectionDemo.App_Start;
+
+namespace DependencyInjectionDemo
+{
+    public class MvcApplication : System.Web.HttpApplication
+    {
+        protected void Application_Start()
+        {
+            AreaRegistration.RegisterAllAreas();
+            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+            RouteConfig.RegisterRoutes(RouteTable.Routes);
+            BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            NinjectConfig.RegisterDependencies();
+        }
+    }
+}
+
+Important:
+
+NinjectConfig.RegisterDependencies();
+
+This starts the Ninject configuration when the application starts.
+
+
+Step 9: Create Student View
+
+Go to:
+
+Controllers → StudentController.cs
+
+Inside the Index() method:
+
+public ActionResult Index()
+{
+    var students = studentService.GetStudents();
+    return View(students);
+}
+
+Right-click inside the method and select:
+
+Add View
+
+Use:
+
+View Name: Index
+Template: Empty
+
+Click Add.
+
+Visual Studio creates:
+
+Views
+ └── Student
+      └── Index.cshtml
+
+
+Step 10: Add Code to Index.cshtml
+
+Open:
+
+Views → Student → Index.cshtml
+
+Add:
+
+@model List<string>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student List</title>
+</head>
+<body>
+    <h2>Student List</h2>
+
+    <ul>
+        @foreach (var student in Model)
+        {
+            <li>@student</li>
+        }
+    </ul>
+</body>
+</html>
+
+
+Step 11: Build the Project
+
+Go to:
+
+Build → Build Solution
+
+Make sure there are no errors.
+
+
+Step 12: Run the Project
+
+Press:
+
+Ctrl + F5
+
+Suppose Visual Studio opens:
+
+https://localhost:44300/
+
+Change the URL to:
+
+https://localhost:44300/Student/Index
+
+Output:
+
+Student List
+
+• Rahul
+• Priya
+• Amit
+• Sneha
+
+
+Project Flow:
+
+StudentController
+       ↓
+IStudentService
+       ↓
+Ninject
+       ↓
+StudentService
+       ↓
+GetStudents()
+       ↓
+
+
